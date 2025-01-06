@@ -9,5 +9,7 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   resources :matches, only: %i[ index show create update destroy ]
-  resources :players, only: %i[ index show create update destroy ]
+  resources :players, only: %i[ index show create update destroy ] do
+    get :leaderboard, on: :collection
+  end
 end

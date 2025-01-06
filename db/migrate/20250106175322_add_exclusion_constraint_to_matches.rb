@@ -1,5 +1,6 @@
 class AddExclusionConstraintToMatches < ActiveRecord::Migration[8.0]
   def change
+    # only supported in PostgreSQL
     enable_extension 'btree_gist'
 
     add_index :matches, [ :player1_id, :start_time, :end_time ], name: 'index_matches_on_player1_and_time'

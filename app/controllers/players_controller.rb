@@ -36,6 +36,12 @@ class PlayersController < ApplicationController
     @player.destroy!
   end
 
+  # GET /players/leaderboard
+  def leaderboard
+    @players = Player.order(ranking: :desc).limit(10)
+    render json: @players
+  end
+
   private
 
   def set_player

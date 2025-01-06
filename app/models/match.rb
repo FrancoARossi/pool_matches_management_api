@@ -9,6 +9,8 @@ class Match < ApplicationRecord
   belongs_to :player2, class_name: "Player", foreign_key: "player2_id"
   belongs_to :winner, class_name: "Player", foreign_key: "winner_id", optional: true
 
+  after_commit :update_player_ranking
+
   private
 
   def no_overlapping_matches
@@ -25,5 +27,13 @@ class Match < ApplicationRecord
 
     errors.add(:player1, "Player cannot have overlapping matches") if overlapping_match_for_player1
     errors.add(:player2, "Player cannot have overlapping matches") if overlapping_match_for_player2
+  end
+
+  def update_player_ranking
+    if transaction_include_any_action?([ :destroy ])
+      winner.update!(ranking: winner.ranking - 1) if winner_id.present?
+    else
+      winner.update!(ranking: winner.ranking + 1) if winner_id.present?
+    end
   end
 end
