@@ -165,6 +165,7 @@ GEM
     parser (3.3.6.0)
       ast (~> 2.4.1)
       racc
+    pg (1.5.9)
     psych (5.2.2)
       date
       stringio
@@ -311,6 +312,7 @@ DEPENDENCIES
   brakeman
   debug
   kamal
+  pg (~> 1.5.9)
   puma (>= 5.0)
   rails (~> 8.0.1)
   rubocop-rails-omakase
