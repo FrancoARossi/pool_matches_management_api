@@ -11,9 +11,6 @@ class Match < ApplicationRecord
 
   private
 
-
-  private
-
   def no_overlapping_matches
     overlapping_match_for_player1 = player1.matches
                                             .where.not(id: id)

@@ -1,4 +1,6 @@
 class MatchesController < ApplicationController
+  include Overlappable
+
   before_action :set_match, only: %i[ show update destroy ]
 
   # GET /matches
@@ -14,20 +16,24 @@ class MatchesController < ApplicationController
 
   # POST /matches
   def create
-    @match = Match.new(match_params)
-    if @match.save
-      render json: @match, status: :created, location: @match
-    else
-      render json: @match.errors, status: :unprocessable_entity
+    rescue_from_overlap_error do
+      @match = Match.new(match_params)
+      if @match.save
+        render json: @match, status: :created, location: @match
+      else
+        render json: @match.errors, status: :unprocessable_entity
+      end
     end
   end
 
   # PATCH/PUT /matches/1
   def update
-    if @match.update(match_params)
-      render json: @match
-    else
-      render json: @match.errors, status: :unprocessable_entity
+    rescue_from_overlap_error do
+      if @match.update(match_params)
+        render json: @match
+      else
+        render json: @match.errors, status: :unprocessable_entity
+      end
     end
   end
 
@@ -38,13 +44,11 @@ class MatchesController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_match
     @match = Match.find(params.expect(:id))
   end
 
-  # Only allow a list of trusted parameters through.
   def match_params
-    params.expect(match: [ :start_time, :end_time, :winner_id, :table_number ])
+    params.expect(match: [ :start_time, :end_time, :player1_id, :player2_id, :winner_id, :table_number ])
   end
 end

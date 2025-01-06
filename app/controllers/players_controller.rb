@@ -38,12 +38,10 @@ class PlayersController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_player
     @player = Player.find(params.expect(:id))
   end
 
-  # Only allow a list of trusted parameters through.
   def player_params
     params.expect(player: [ :name, :ranking, :preferred_cue ])
   end

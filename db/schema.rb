@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_06_160601) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_06_175322) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "btree_gist"
   enable_extension "pg_catalog.plpgsql"
 
   create_table "matches", force: :cascade do |t|
@@ -23,9 +24,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_06_160601) do
     t.integer "table_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["player1_id", "start_time", "end_time"], name: "index_matches_on_player1_and_time"
     t.index ["player1_id"], name: "index_matches_on_player1_id"
+    t.index ["player2_id", "start_time", "end_time"], name: "index_matches_on_player2_and_time"
     t.index ["player2_id"], name: "index_matches_on_player2_id"
     t.index ["winner_id"], name: "index_matches_on_winner_id"
+    t.exclusion_constraint "player1_id WITH =, tsrange(start_time, end_time) WITH &&", using: :gist, name: "no_overlap_for_player1"
+    t.exclusion_constraint "player2_id WITH =, tsrange(start_time, end_time) WITH &&", using: :gist, name: "no_overlap_for_player2"
   end
 
   create_table "players", force: :cascade do |t|
