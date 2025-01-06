@@ -7,4 +7,6 @@ class Player < ApplicationRecord
   has_many :matches, ->(player) {
     unscope(:where).where("player1_id = :id OR player2_id = :id", id: player.id)
   }
+
+  scope :by_name, ->(name) { where("name ILIKE ?", "%#{name}%") }
 end

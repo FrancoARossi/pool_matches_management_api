@@ -3,9 +3,15 @@ class MatchesController < ApplicationController
 
   before_action :set_match, only: %i[ show update destroy ]
 
+  STATUSES = %w[ upcoming ongoing completed ].freeze
+
   # GET /matches
   def index
     @matches = Match.all
+
+    @matches = @matches.by_date(matches_search_params[:date]) if matches_search_params[:date].present?
+    @matches = @matches.by_status(matches_search_params[:status]) if matches_search_params[:status].present?
+
     render json: @matches
   end
 
@@ -50,5 +56,9 @@ class MatchesController < ApplicationController
 
   def match_params
     params.expect(match: [ :start_time, :end_time, :player1_id, :player2_id, :winner_id, :table_number ])
+  end
+
+  def matches_search_params
+    params.permit(:date, :status)
   end
 end

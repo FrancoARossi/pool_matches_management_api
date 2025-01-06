@@ -4,6 +4,9 @@ class PlayersController < ApplicationController
   # GET /players
   def index
     @players = Player.all
+
+    @players = @players.by_name(players_search_params[:name]) if players_search_params[:name].present?
+
     render json: @players
   end
 
@@ -50,5 +53,9 @@ class PlayersController < ApplicationController
 
   def player_params
     params.expect(player: [ :name, :ranking, :preferred_cue ])
+  end
+
+  def players_search_params
+    params.permit(:name)
   end
 end

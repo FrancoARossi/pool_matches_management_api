@@ -11,6 +11,21 @@ class Match < ApplicationRecord
 
   after_commit :update_player_ranking
 
+  scope :by_date, ->(date) {
+    where("TO_CHAR(start_time, 'YYYY-MM-DD') = ?", date)
+    .or(where("TO_CHAR(end_time, 'YYYY-MM-DD') = ?", date))
+  }
+  scope :by_status, ->(status) {
+    case status
+    when "upcoming"
+      where("start_time > ?", Time.current)
+    when "ongoing"
+      where("start_time <= ? AND end_time >= ?", Time.current, Time.current)
+    when "completed"
+      where("end_time < ?", Time.current)
+    end
+  }
+
   private
 
   def no_overlapping_matches
