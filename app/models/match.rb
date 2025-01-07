@@ -29,19 +29,20 @@ class Match < ApplicationRecord
   private
 
   def no_overlapping_matches
-    overlapping_match_for_player1 = player1.matches
-                                            .where.not(id: id)
-                                            .where("start_time <= ? AND end_time >= ?", end_time, start_time)
-                                            .exists?
+    throw :abort if player1_id.blank? || player2_id.blank?
 
+    overlapping_match_for_player1 = player1.matches
+                                            .where.not(id:)
+                                            .where("start_time < ? AND end_time > ?", end_time, start_time)
+                                            .exists?
 
     overlapping_match_for_player2 = player2.matches
-                                            .where.not(id: id)
-                                            .where("start_time <= ? AND end_time >= ?", end_time, start_time)
+                                            .where.not(id:)
+                                            .where("start_time < ? AND end_time > ?", end_time, start_time)
                                             .exists?
 
-    errors.add(:player1, "Player cannot have overlapping matches") if overlapping_match_for_player1
-    errors.add(:player2, "Player cannot have overlapping matches") if overlapping_match_for_player2
+    errors.add(:player1, "cannot have overlapping matches") if overlapping_match_for_player1
+    errors.add(:player2, "cannot have overlapping matches") if overlapping_match_for_player2
   end
 
   def update_player_ranking
