@@ -41,7 +41,7 @@ class PlayersController < ApplicationController
 
   # GET /players/leaderboard
   def leaderboard
-    @players = Player.order(ranking: :desc).limit(10)
+    @players = Player.order(:ranking)
     render json: @players
   end
 
