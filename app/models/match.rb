@@ -46,10 +46,6 @@ class Match < ApplicationRecord
   end
 
   def update_player_ranking
-    if transaction_include_any_action?([ :destroy ])
-      winner.update!(ranking: winner.ranking - 1) if winner_id.present?
-    else
-      winner.update!(ranking: winner.ranking + 1) if winner_id.present?
-    end
+    UpdateRankingsJob.perform_later
   end
 end
