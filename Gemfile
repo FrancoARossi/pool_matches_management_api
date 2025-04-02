@@ -55,4 +55,4 @@ end
 
 gem "pg", "~> 1.5.9"
 
-gem "sidekiq", "~> 7.3"
+gem "sidekiq", "~> 8.0"
